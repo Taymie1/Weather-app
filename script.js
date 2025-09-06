@@ -1,4 +1,4 @@
- const apiKey = "505bcfa427946f18e668471e4215a340"; // from config.js
+const apiKey = "505bcfa427946f18e668471e4215a340"; // from config.js
 
 async function getWeather() {
   const cityInput = document.getElementById("cityInput").value.trim();
@@ -9,10 +9,9 @@ async function getWeather() {
     return;
   }
 
-  // If no country code provided, default to South Africa (ZA)
   let city = cityInput;
   if (!city.includes(",")) {
-    city = `${city},ZA`;
+    city = `${city},ZA`; // default South Africa
   }
 
   try {
@@ -26,6 +25,9 @@ async function getWeather() {
 
     const data = await response.json();
 
+    // Change background based on weather
+    changeBackground(data.weather[0].main);
+
     const weatherHTML = `
       <h2>${data.name}, ${data.sys.country}</h2>
       <img class="icon" src="https://openweathermap.org/img/wn/${data.weather[0].icon}@2x.png" alt="Weather icon" />
@@ -35,6 +37,32 @@ async function getWeather() {
 
     resultDiv.innerHTML = weatherHTML;
   } catch (error) {
-    resultDiv.innerHTML = `<p style="color:red;">${error.message}</p>`;
+    resultDiv.innerHTML = `<p style="color:#ffcccc;">${error.message}</p>`;
   }
 }
+
+function changeBackground(weather) {
+  const body = document.body;
+
+  switch (weather.toLowerCase()) {
+    case "clear":
+      body.style.background = "linear-gradient(to bottom right, #fbc2eb, #a6c1ee)";
+      break;
+    case "clouds":
+      body.style.background = "linear-gradient(to bottom right, #bdc3c7, #2c3e50)";
+      break;
+    case "rain":
+      body.style.background = "linear-gradient(to bottom right, #4e54c8, #8f94fb)";
+      break;
+    case "thunderstorm":
+      body.style.background = "linear-gradient(to bottom right, #141e30, #243b55)";
+      break;
+    case "snow":
+      body.style.background = "linear-gradient(to bottom right, #e0eafc, #cfdef3)";
+      break;
+    default:
+      body.style.background = "linear-gradient(to bottom right, #6dd5fa, #2980b9)";
+  }
+}
+
+
